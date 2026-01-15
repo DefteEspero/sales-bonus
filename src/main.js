@@ -46,7 +46,7 @@ function calculateBonusByProfit(index, total, seller) {
  * Функция для анализа данных продаж
  * @param data
  * @param options
- * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id, tax_profit}[]}
+ * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id}[]}
  */
 function analyzeSalesData(data, options) {
     // @TODO: Проверка входных данных
