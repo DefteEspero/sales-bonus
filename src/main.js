@@ -188,9 +188,6 @@ function analyzeSalesData(data, options) {
         .map(([sku, quantity]) => ({ sku, quantity }))
         .sort((a, b) => b.quantity - a.quantity)
         .slice(0, topNumber);
-    
-    // Небольшое добавление от себя расчёта прибыли после вычита налога в 10%
-    const taxProfit = Math.round(i.profit * 0.9 * 100) / 100;
 
     return {
         seller_id: i.seller_id,
@@ -199,8 +196,7 @@ function analyzeSalesData(data, options) {
         profit: Math.round(i.profit * 100) / 100,
         sales_count: i.sales_count,
         top_products: topProducts,
-        bonus: 0,
-        tax_profit: taxProfit // Дополнительно вывел расчёт прибыли после вычита налога в 10%
+        bonus: 0
         };
     });
 
