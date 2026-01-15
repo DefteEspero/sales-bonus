@@ -50,20 +50,67 @@ function calculateBonusByProfit(index, total, seller) {
  */
 function analyzeSalesData(data, options) {
     // @TODO: Проверка входных данных
-    if (!data || typeof data !== 'object') {
-        return [];
+
+    if (!data || typeof data !== 'object' || data === null) {
+        throw new Error('Некорректные данные: data должен быть объектом');
+    }
+
+    // Проверка обязательных полей в data
+
+    if (!Array.isArray(data.sellers)) {
+        throw new Error('Некорректные данные: sellers должен быть массивом');
+    }
+    if (!Array.isArray(data.products)) {
+        throw new Error('Некорректные данные: products должен быть массивом');
+    }
+    if (!Array.isArray(data.purchase_records)) {
+        throw new Error('Некорректные данные: purchase_records должен быть массивом');
+    }
+
+    // Проверка обязательных полей в data
+
+    if (!Array.isArray(data.sellers)) {
+        throw new Error('Некорректные данные: sellers должен быть массивом');
+    }
+    if (!Array.isArray(data.products)) {
+        throw new Error('Некорректные данные: products должен быть массивом');
+    }
+    if (!Array.isArray(data.purchase_records)) {
+        throw new Error('Некорректные данные: purchase_records должен быть массивом');
     }
 
     const sellers = Array.isArray(data.sellers) ? data.sellers : [];
     const products = Array.isArray(data.products) ? data.products : [];
     const purchaseRecords = Array.isArray(data.purchase_records) ? data.purchase_records : [];
 
+    // Проверка на пустые массивы
+    
+    if (data.sellers.length === 0) {
+        throw new Error('Некорректные данные: sellers не должен быть пустым');
+    }
+    if (data.products.length === 0) {
+        throw new Error('Некорректные данные: products не должен быть пустым');
+    }
+    if (data.purchase_records.length === 0) {
+        throw new Error('Некорректные данные: purchase_records не должен быть пустым');
+    }
+
     // @TODO: Проверка наличия опций
 
-    const settings = options && typeof options === 'object' ? options : [];
+    const settings = options && typeof options === 'object' ? options : {};
     const calculateRevenue = typeof settings.calculateRevenue === 'function' ? settings.calculateRevenue : calculateSimpleRevenue;
     const calculateBonus = typeof settings.calculateBonus === 'function' ? settings.calculateBonus : calculateBonusByProfit;
     const topNumber = Number.isFinite(settings.topNumber) ? Math.max(1, Math.floor(settings.topNumber)) : 10;
+
+    if (options && typeof options !== 'object') {
+        throw new Error('Некорректные опции: options должен быть объектом');
+    }
+    if (settings.calculateRevenue && typeof settings.calculateRevenue !== 'function') {
+        throw new Error('Некорректные опции: calculateRevenue должна быть функцией');
+    }
+    if (settings.calculateBonus && typeof settings.calculateBonus !== 'function') {
+        throw new Error('Некорректные опции: calculateBonus должна быть функцией');
+    }
 
     // @TODO: Подготовка промежуточных данных для сбора статистики
 
@@ -125,9 +172,12 @@ function analyzeSalesData(data, options) {
             const product = productBySku[item.sku];
             const revenue = Number(calculateRevenue(item, product)) || 0;
             const quantity = Number(item.quantity) || 0;
+            const price = Number(item.sale_price) || 0;
+            const discount = (Number(item.discount) || 0) / 100;
             const purchasePrice = product ? (Number(product.purchase_price) || 0) : 0;
+            const revenueRaw = Math.max(0, price * quantity * (1 - discount));
             const cost = purchasePrice * quantity;
-            const profit = revenue - cost;
+            const profit = revenueRaw - cost;
 
             stat.revenue += revenue;
             stat.profit += profit;
