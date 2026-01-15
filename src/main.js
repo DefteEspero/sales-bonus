@@ -102,14 +102,8 @@ function analyzeSalesData(data, options) {
     const calculateBonus = typeof settings.calculateBonus === 'function' ? settings.calculateBonus : calculateBonusByProfit;
     const topNumber = Number.isFinite(settings.topNumber) ? Math.max(1, Math.floor(settings.topNumber)) : 10;
 
-    if (!options || typeof options !== 'object') {
-        throw new Error('Некорректные опции: options должен быть объектом');
-    }
-    if (settings.calculateRevenue && typeof settings.calculateRevenue !== 'function') {
-        throw new Error('Некорректные опции: calculateRevenue должна быть функцией');
-    }
-    if (settings.calculateBonus && typeof settings.calculateBonus !== 'function') {
-        throw new Error('Некорректные опции: calculateBonus должна быть функцией');
+    if (typeof options.calculateRevenue !== 'function' || typeof options.calculateBonus !== 'function') {
+        throw new Error('Некорректные опции: calculateRevenue и calculateBonus должны быть функциями');
     }
 
     // @TODO: Подготовка промежуточных данных для сбора статистики
