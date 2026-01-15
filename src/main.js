@@ -97,6 +97,10 @@ function analyzeSalesData(data, options) {
 
     // @TODO: Проверка наличия опций
 
+    if (!options || typeof options !== 'object') {
+        throw new Error('Некорректные опции: options должен быть объектом');
+    }
+
     const settings = options && typeof options === 'object' ? options : {};
     const calculateRevenue = typeof settings.calculateRevenue === 'function' ? settings.calculateRevenue : calculateSimpleRevenue;
     const calculateBonus = typeof settings.calculateBonus === 'function' ? settings.calculateBonus : calculateBonusByProfit;
