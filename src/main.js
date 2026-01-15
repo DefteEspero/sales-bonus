@@ -102,7 +102,7 @@ function analyzeSalesData(data, options) {
     const calculateBonus = typeof settings.calculateBonus === 'function' ? settings.calculateBonus : calculateBonusByProfit;
     const topNumber = Number.isFinite(settings.topNumber) ? Math.max(1, Math.floor(settings.topNumber)) : 10;
 
-    if (options && typeof options !== 'object') {
+    if (!options || typeof options !== 'object') {
         throw new Error('Некорректные опции: options должен быть объектом');
     }
     if (settings.calculateRevenue && typeof settings.calculateRevenue !== 'function') {
