@@ -46,7 +46,7 @@ function calculateBonusByProfit(index, total, seller) {
  * Функция для анализа данных продаж
  * @param data
  * @param options
- * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id}[]}
+ * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id, tax_profit}[]}
  */
 function analyzeSalesData(data, options) {
     // @TODO: Проверка входных данных
@@ -187,7 +187,11 @@ function analyzeSalesData(data, options) {
     const topProducts = Object.entries(i._product)
         .map(([sku, quantity]) => ({ sku, quantity }))
         .sort((a, b) => b.quantity - a.quantity)
-        .slice(0, topNumber );
+        .slice(0, topNumber);
+    
+    // Небольшое добавление от себя расчёта прибыли после вычита налога в 10%
+    const taxProfit = Math.round(i.profit * 0.9 * 100) / 100;
+
     return {
         seller_id: i.seller_id,
         name: i.name,
@@ -195,7 +199,8 @@ function analyzeSalesData(data, options) {
         profit: Math.round(i.profit * 100) / 100,
         sales_count: i.sales_count,
         top_products: topProducts,
-        bonus: 0
+        bonus: 0,
+        tax_profit: taxProfit // Дополнительно вывел расчёт прибыли после вычита налога в 10%
         };
     });
 
